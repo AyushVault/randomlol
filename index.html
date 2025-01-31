@@ -25,14 +25,14 @@
         .buttons {
             display: flex;
             justify-content: center;
-            gap: 60px; /* Increased space between the buttons */
+            gap: 60px;
         }
         button {
             font-size: 1.2rem;
             padding: 10px 20px;
             border: none;
             cursor: pointer;
-            transition: all 0.3s ease-in-out;
+            transition: all 0.1s ease-in-out;
             border-radius: 5px;
             position: relative;
             z-index: 1;
@@ -66,20 +66,16 @@
     </style>
 </head>
 <body>
-    <h1>Ayush wants to ask you... Will you be his Valentine? 💖</h1>
+    <h1>Ayush wants to know... Will you be my Valentine? 💖</h1>
     <div class="buttons">
         <button class="yes" onclick="showMessage()">Yes</button>
-        <button class="no" onmouseover="moveButton()">No</button>
+        <button class="no">No</button>
     </div>
     <p id="message"></p>
     
     <script>
-        function showMessage() {
-            document.getElementById('message').innerText = "YAY! You said yes to Ayush! 🎉💖";
-            document.getElementById('message').style.display = 'block';
-        }
-
-        function moveButton() {
+        // Add click behavior for mobile
+        function moveButtonOnClick() {
             let noButton = document.querySelector('.no');
             let maxWidth = window.innerWidth - noButton.offsetWidth - 20;
             let maxHeight = window.innerHeight - noButton.offsetHeight - 20;
@@ -92,15 +88,43 @@
             noButton.style.top = `${y}px`;
         }
 
-        window.onload = function() {
-            let yesButton = document.querySelector('.yes');
+        // Add hover behavior for desktop
+        function moveButtonOnHover() {
             let noButton = document.querySelector('.no');
-            let yesButtonRect = yesButton.getBoundingClientRect();
+            let maxWidth = window.innerWidth - noButton.offsetWidth - 20;
+            let maxHeight = window.innerHeight - noButton.offsetHeight - 20;
+
+            let x = Math.random() * maxWidth;
+            let y = Math.random() * maxHeight;
 
             noButton.style.position = 'absolute';
-            noButton.style.left = `${yesButtonRect.right + 60}px`; 
-            noButton.style.top = `${yesButtonRect.top}px`;
-        };
+            noButton.style.left = `${x}px`;
+            noButton.style.top = `${y}px`;
+        }
+
+        // Show message when "Yes" is clicked
+        function showMessage() {
+            document.getElementById('message').innerText = "YAY! You said yes to Ayush! 🎉💖";
+            document.getElementById('message').style.display = 'block';
+        }
+
+        // Add event listeners based on device type
+        function setEventListeners() {
+            let noButton = document.querySelector('.no');
+            if (window.innerWidth <= 768) {
+                // For mobile: move button on click
+                noButton.removeEventListener('mouseover', moveButtonOnHover);
+                noButton.addEventListener('click', moveButtonOnClick);
+            } else {
+                // For PC: move button on hover
+                noButton.removeEventListener('click', moveButtonOnClick);
+                noButton.addEventListener('mouseover', moveButtonOnHover);
+            }
+        }
+
+        // Set event listeners on load and when resizing the window
+        window.onload = setEventListeners;
+        window.onresize = setEventListeners;
     </script>
 </body>
 </html>
